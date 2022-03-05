@@ -1,19 +1,42 @@
 import {
-  StyleSheet,
   Text,
   View,
   TextInput,
   Image,
   StatusBar,
   SafeAreaView,
+  ImageBackground,
+  StyleSheet,
 } from "react-native";
+import { client_id } from "@env";
+
+import { useState } from "react";
+
+import { useFonts } from "expo-font";
+
 import bgimg from "../assets/42.png";
 
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }) {
+  // console.log(client_id);
+  const [text, setText] = useState("");
+  const [loaded] = useFonts({
+    SmoochSansMedium: require("../assets/fonts/SmoochSans-Medium.ttf"),
+  });
+
+  if (!loaded) {
+    return null;
+  }
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="white" />
-      <Image source={bgimg} style={{ width: 100, height: 100 }} />
+    <ImageBackground
+      source={require("../assets/back42.jpg")}
+      style={styles.background}
+    >
+      <StatusBar
+        backgroundColor="white"
+        hidden={false}
+        barStyle={"light-content"}
+      />
+      <Image source={bgimg} style={{ width: 200, height: 200 }} />
       <View
         style={{
           borderWidth: 1,
@@ -27,9 +50,14 @@ export default function SearchScreen() {
       >
         <TextInput
           maxLength={10}
-          style={{ fontSize: 20 }}
+          style={{
+            fontSize: 20,
+            color: "white",
+            fontFamily: "SmoochSansMedium",
+          }}
           placeholder={"Entre username"}
           placeholderTextColor="white"
+          onChange={(value) => setText(value.nativeEvent.text)}
         />
       </View>
       <View
@@ -43,18 +71,30 @@ export default function SearchScreen() {
           backgroundColor: "white",
         }}
       >
-        <Text style={{ fontSize: 20 }}>Search</Text>
+        <Text
+          style={{ fontSize: 20, fontFamily: "SmoochSansMedium" }}
+          onPress={() =>
+            navigation.navigate("profile", {
+              name: text,
+            })
+          }
+        >
+          Search
+        </Text>
       </View>
-    </SafeAreaView>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "orange",
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
+  },
+  background: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
