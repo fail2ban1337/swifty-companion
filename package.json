@@ -17,15 +17,18 @@
     "axios": "^0.26.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "expo": "~44.0.0",
-    "expo-font": "~10.0.4",
+    "expo-font": "~10.0.5",
     "expo-status-bar": "~1.2.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "react-native": "0.64.3",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-44.0.0.tar.gz",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
     "react-native-web": "0.17.1",
-    "undefined": "@expo-google-fonts/Smooch+Sans"
+    "undefined": "@expo-google-fonts/Smooch+Sans",
+    "expo-web-browser": "~10.1.1",
+    "expo-linking": "~3.0.0",
+    "expo-secure-store": "~11.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
