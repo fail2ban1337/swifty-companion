@@ -35,7 +35,13 @@ export default function App() {
           name="profile"
           component={ProfileScreen}
           options={({ route }) => ({
+            headerShadowVisible: false,
             title: route.params.name,
+            headerTitleAlign: "left", //moved this from headerStyle property
+            headerStyle: {
+              backgroundColor: "#01a2a4",
+            },
+            headerTintColor: "white",
           })}
         />
       </Stack.Navigator>

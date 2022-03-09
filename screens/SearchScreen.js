@@ -4,21 +4,18 @@ import {
   TextInput,
   Image,
   StatusBar,
-  SafeAreaView,
   ImageBackground,
   StyleSheet,
+  TouchableNativeFeedback,
 } from "react-native";
-import { client_id } from "@env";
 
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 import { useFonts } from "expo-font";
-
-import bgimg from "../assets/42.png";
-
+import bgimg from "../assets/42-white.png";
+import { CheckAccess, getInfoLoggedUser } from "../actions/userApi";
 export default function SearchScreen({ navigation }) {
-  // console.log(client_id);
   const [text, setText] = useState("");
+  const [TextError, setTextError] = useState(false);
   const [loaded] = useFonts({
     SmoochSansMedium: require("../assets/fonts/SmoochSans-Medium.ttf"),
   });
@@ -26,6 +23,25 @@ export default function SearchScreen({ navigation }) {
   if (!loaded) {
     return null;
   }
+  const _handleSearchButton = async () => {
+    const result = await CheckAccess();
+    if (!result) {
+      return navigation.navigate("login");
+    } else {
+      let result;
+      if (
+        (result = await getInfoLoggedUser(text.toLocaleLowerCase())) &&
+        text.trim() !== ""
+      ) {
+        navigation.navigate("profile", {
+          name: text,
+          result: result,
+        });
+      } else {
+        setTextError(true);
+      }
+    }
+  };
   return (
     <ImageBackground
       source={require("../assets/back42.jpg")}
@@ -38,15 +54,10 @@ export default function SearchScreen({ navigation }) {
       />
       <Image source={bgimg} style={{ width: 200, height: 200 }} />
       <View
-        style={{
-          borderWidth: 1,
-          borderColor: "white",
-          borderRadius: 10,
-          paddingHorizontal: 40,
-          paddingVertical: 10,
-          alignSelf: "stretch",
-          marginHorizontal: 60,
-        }}
+        style={[
+          styles.SearchBar,
+          TextError ? styles.textinvalid : styles.textvalid,
+        ]}
       >
         <TextInput
           maxLength={10}
@@ -57,31 +68,26 @@ export default function SearchScreen({ navigation }) {
           }}
           placeholder={"Entre username"}
           placeholderTextColor="white"
-          onChange={(value) => setText(value.nativeEvent.text)}
+          onChange={(value) => {
+            setText(value.nativeEvent.text);
+            setTextError(false);
+          }}
         />
       </View>
-      <View
-        style={{
-          marginTop: 25,
-          borderWidth: 1,
-          borderColor: "white",
-          borderRadius: 10,
-          paddingVertical: 10,
-          paddingHorizontal: 30,
-          backgroundColor: "white",
-        }}
-      >
-        <Text
-          style={{ fontSize: 20, fontFamily: "SmoochSansMedium" }}
-          onPress={() =>
-            navigation.navigate("profile", {
-              name: text,
-            })
-          }
-        >
-          Search
-        </Text>
-      </View>
+      <TouchableNativeFeedback onPress={() => _handleSearchButton()}>
+        <View style={styles.searchButton}>
+          <Text
+            style={{ fontSize: 20, fontFamily: "SmoochSansMedium" }}
+            // onPress={() =>
+            //   navigation.navigate("profile", {
+            //     name: text,
+            //   })
+            // }
+          >
+            Search
+          </Text>
+        </View>
+      </TouchableNativeFeedback>
     </ImageBackground>
   );
 }
@@ -96,5 +102,28 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  searchButton: {
+    marginTop: 25,
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    backgroundColor: "white",
+  },
+  SearchBar: {
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 40,
+    paddingVertical: 10,
+    alignSelf: "stretch",
+    marginHorizontal: 60,
+  },
+  textinvalid: {
+    borderColor: "red",
+  },
+  textvalid: {
+    borderColor: "white",
   },
 });

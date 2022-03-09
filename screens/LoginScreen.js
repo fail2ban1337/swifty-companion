@@ -6,43 +6,68 @@ import {
   Image,
   ImageBackground,
   TouchableNativeFeedback,
+  Platform,
 } from "react-native";
+import { useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-
 import * as Linking from "expo-linking";
-
 import { useFonts } from "expo-font";
 import * as WebBrowser from "expo-web-browser";
-
 import image42 from "../assets/42-white.png";
+import { CheckAccess, getAccess } from "../actions/userApi";
 
-export default function LoginScreen() {
+export default function LoginScreen({ route, navigation }) {
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    async function test() {
+      if (await CheckAccess()) {
+        return navigation.replace("search");
+      } else {
+        setIsLoading(false);
+      }
+    }
+    test();
+  }, []);
+
   const [loaded] = useFonts({
     SmoochSansMedium: require("../assets/fonts/SmoochSans-Medium.ttf"),
   });
-  if (!loaded) {
+
+  if (isLoading) {
     return null;
   }
   let url =
-    "https://api.intra.42.fr/oauth/authorize?client_id=897ad82467da0b23311fe619b9f9f0fb8f608bc98dc97a748ae73f00842acc97&redirect_uri=exp%3A%2F%2F172.20.10.14%3A19000&response_type=code";
+    "https://api.intra.42.fr/oauth/authorize?client_id=897ad82467da0b23311fe619b9f9f0fb8f608bc98dc97a748ae73f00842acc97&redirect_uri=exp%3A%2F%2F10.12.2.3%3A19000&response_type=code";
   const _handlePressButtonAsync = async () => {
+    // await getAccess();
     WebBrowser.openBrowserAsync(url);
     Linking.addEventListener("url", async (event) => {
       let data = Linking.parse(event.url);
       code = data.queryParams.code;
-      const token = await SecureStore.getItemAsync("secure_token");
-      if (!code || token) WebBrowser.dismissBrowser();
-      await SecureStore.setItemAsync("secure_token", code);
-      console.log(token);
+      if (Platform.OS == "android") {
+        if (await getAccess(code)) {
+          return navigation.replace("search");
+        }
+      } else {
+        if (!code) WebBrowser.dismissBrowser();
+        else {
+          if (await getAccess(code)) {
+            WebBrowser.dismissBrowser();
+            navigation.replace("search");
+          }
+        }
+        WebBrowser.dismissBrowser();
+      }
     });
   };
+
   return (
     <ImageBackground
       source={require("../assets/back42.jpg")}
       style={styles.background}
     >
       <Image style={styles.logo} source={image42} />
-      <TouchableNativeFeedback onPress={_handlePressButtonAsync}>
+      <TouchableNativeFeedback onPress={() => _handlePressButtonAsync()}>
         <View style={styles.loginwrap}>
           <Text style={styles.loginwrapText}>Login with 42</Text>
         </View>
