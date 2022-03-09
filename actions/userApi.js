@@ -13,7 +13,7 @@ export const CheckAccess = async () => {
     const jsonValue = await AsyncStorage.getItem("@user_access");
     const jsonResult = jsonValue != null ? JSON.parse(jsonValue) : null;
     if (!jsonResult || jsonResult.expires_in < 1) return false;
-    const result = await axios.get(`${BASE_URL}/oauth/token/info`, {
+    await axios.get(`${BASE_URL}/oauth/token/info`, {
       headers: {
         Authorization: `Bearer ${jsonResult.access_token}`,
       },
@@ -25,7 +25,6 @@ export const CheckAccess = async () => {
 };
 
 export const getAccess = async (code) => {
-  console.log("code", code);
   try {
     const result = await axios.post(
       `${BASE_URL}/oauth/token`,

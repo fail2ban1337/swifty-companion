@@ -1,7 +1,7 @@
 import {
   View,
   Text,
-  SafeAreaView,
+  StatusBar,
   StyleSheet,
   Image,
   ImageBackground,
@@ -29,17 +29,12 @@ export default function LoginScreen({ route, navigation }) {
     test();
   }, []);
 
-  const [loaded] = useFonts({
-    SmoochSansMedium: require("../assets/fonts/SmoochSans-Medium.ttf"),
-  });
-
   if (isLoading) {
     return null;
   }
   let url =
-    "https://api.intra.42.fr/oauth/authorize?client_id=897ad82467da0b23311fe619b9f9f0fb8f608bc98dc97a748ae73f00842acc97&redirect_uri=exp%3A%2F%2F10.12.2.3%3A19000&response_type=code";
+    "https://api.intra.42.fr/oauth/authorize?client_id=897ad82467da0b23311fe619b9f9f0fb8f608bc98dc97a748ae73f00842acc97&redirect_uri=exp%3A%2F%2F10.12.2.4%3A19000&response_type=code";
   const _handlePressButtonAsync = async () => {
-    // await getAccess();
     WebBrowser.openBrowserAsync(url);
     Linking.addEventListener("url", async (event) => {
       let data = Linking.parse(event.url);
@@ -66,6 +61,11 @@ export default function LoginScreen({ route, navigation }) {
       source={require("../assets/back42.jpg")}
       style={styles.background}
     >
+      <StatusBar
+        backgroundColor="white"
+        hidden={false}
+        barStyle={"light-content"}
+      />
       <Image style={styles.logo} source={image42} />
       <TouchableNativeFeedback onPress={() => _handlePressButtonAsync()}>
         <View style={styles.loginwrap}>
@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
     lineHeight: 50,
-    fontSize: 30,
-    fontFamily: "SmoochSansMedium",
+    fontSize: 20,
   },
 });

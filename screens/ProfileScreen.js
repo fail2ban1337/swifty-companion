@@ -5,22 +5,13 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  SectionList,
 } from "react-native";
-import { Header, ListItem, Avatar } from "react-native-elements";
-
-import { useEffect } from "react";
-import { useFonts } from "expo-font";
-import { getInfoLoggedUser } from "../actions/userApi";
+import { ListItem } from "react-native-elements";
 import PercentageBar from "../lib/Level-bar.component";
 import PercentageBarSkill from "../lib/Percentage-bar.component";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function ProfileScreen({ route, navigation }) {
-  const [loaded] = useFonts({
-    SmoochSansMedium: require("../assets/fonts/SmoochSans-Medium.ttf"),
-  });
-
   const { result } = route.params;
   let cursus_users = {};
   result.cursus_users.forEach((element) => {
@@ -67,7 +58,9 @@ export default function ProfileScreen({ route, navigation }) {
               <Text style={styles.userinfoPresValue}>{cursus_users.level}</Text>
             </View>
             <View style={{ alignSelf: "stretch", marginTop: 20 }}>
-              <PercentageBar percentage={cursus_users.level} />
+              {cursus_users.level ? (
+                <PercentageBar percentage={cursus_users.level} />
+              ) : null}
             </View>
           </View>
         </View>
@@ -94,9 +87,8 @@ export default function ProfileScreen({ route, navigation }) {
               <Text
                 style={{
                   textAlign: "center",
-                  fontSize: 25,
+                  fontSize: 20,
                   color: "black",
-                  fontFamily: "SmoochSansMedium",
                 }}
               >
                 Projects
@@ -159,9 +151,8 @@ export default function ProfileScreen({ route, navigation }) {
               <Text
                 style={{
                   textAlign: "center",
-                  fontSize: 25,
+                  fontSize: 20,
                   color: "black",
-                  fontFamily: "SmoochSansMedium",
                 }}
               >
                 Skills
@@ -183,7 +174,7 @@ export default function ProfileScreen({ route, navigation }) {
                       <ListItem.Subtitle style={styles.userProjPresValue}>
                         {r.level}
                       </ListItem.Subtitle>
-                      <PercentageBarSkill percentage={r.level} />
+                      {/* <PercentageBarSkill percentage={r.level} /> */}
                     </ListItem.Content>
                   </ListItem>
                 ))
@@ -212,9 +203,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   userName: {
-    fontFamily: "SmoochSansMedium",
     color: "white",
-    fontSize: 30,
+    fontSize: 20,
   },
   userInfo: {
     backgroundColor: "rgba(32, 32, 38, 0.85)",
@@ -230,17 +220,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    flexWrap: "wrap",
     marginBottom: 10,
   },
   userinfoPres: {
     color: "#02cdd1",
-    fontSize: 25,
-    fontFamily: "SmoochSansMedium",
+    fontSize: 20,
   },
   userinfoPresValue: {
     color: "white",
-    fontSize: 25,
-    fontFamily: "SmoochSansMedium",
+    fontSize: 18,
   },
   pojectsContainer: {
     alignSelf: "stretch",
@@ -251,18 +240,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    flexWrap: "wrap",
     marginBottom: 10,
     marginHorizontal: 10,
   },
   userProjPres: {
     color: "#02cdd1",
-    fontSize: 25,
-    fontFamily: "SmoochSansMedium",
+    fontSize: 17,
   },
   userProjPresValue: {
     color: "#02cdd1",
-    fontSize: 25,
-    fontFamily: "SmoochSansMedium",
+    fontSize: 17,
   },
   userSkillsCol: {
     flexDirection: "column",

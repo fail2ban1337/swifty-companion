@@ -10,32 +10,25 @@ import {
 } from "react-native";
 
 import { useState, useEffect } from "react";
-import { useFonts } from "expo-font";
 import bgimg from "../assets/42-white.png";
 import { CheckAccess, getInfoLoggedUser } from "../actions/userApi";
 export default function SearchScreen({ navigation }) {
   const [text, setText] = useState("");
   const [TextError, setTextError] = useState(false);
-  const [loaded] = useFonts({
-    SmoochSansMedium: require("../assets/fonts/SmoochSans-Medium.ttf"),
-  });
 
-  if (!loaded) {
-    return null;
-  }
   const _handleSearchButton = async () => {
     const result = await CheckAccess();
     if (!result) {
       return navigation.navigate("login");
     } else {
-      let result;
+      let resultData;
       if (
-        (result = await getInfoLoggedUser(text.toLocaleLowerCase())) &&
+        (resultData = await getInfoLoggedUser(text.toLocaleLowerCase())) &&
         text.trim() !== ""
       ) {
         navigation.navigate("profile", {
           name: text,
-          result: result,
+          result: resultData,
         });
       } else {
         setTextError(true);
@@ -64,7 +57,6 @@ export default function SearchScreen({ navigation }) {
           style={{
             fontSize: 20,
             color: "white",
-            fontFamily: "SmoochSansMedium",
           }}
           placeholder={"Entre username"}
           placeholderTextColor="white"
@@ -77,7 +69,7 @@ export default function SearchScreen({ navigation }) {
       <TouchableNativeFeedback onPress={() => _handleSearchButton()}>
         <View style={styles.searchButton}>
           <Text
-            style={{ fontSize: 20, fontFamily: "SmoochSansMedium" }}
+            style={{ fontSize: 20 }}
             // onPress={() =>
             //   navigation.navigate("profile", {
             //     name: text,
