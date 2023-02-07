@@ -33,7 +33,7 @@ export default function LoginScreen({ route, navigation }) {
     return null;
   }
   let url =
-    "https://api.intra.42.fr/oauth/authorize?client_id=897ad82467da0b23311fe619b9f9f0fb8f608bc98dc97a748ae73f00842acc97&redirect_uri=exp%3A%2F%2F10.12.2.4%3A19000&response_type=code";
+    "https://api.intra.42.fr/oauth/authorize?client_id"
   const _handlePressButtonAsync = async () => {
     WebBrowser.openBrowserAsync(url);
     Linking.addEventListener("url", async (event) => {
